@@ -57,7 +57,6 @@ RSpec.describe "Transactions", type: :request do
   
   
   describe ".create" do
-    #let(:transaction){create(:transaction)}
     let(:the_params){
       {customer_id: 3, input_amount: 250, output_amount: 600, input_currency: "$", output_currency: "GHS", transaction_date: DateTime.now }
     }
