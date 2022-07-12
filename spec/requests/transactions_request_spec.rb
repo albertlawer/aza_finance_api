@@ -56,4 +56,39 @@ RSpec.describe "Transactions", type: :request do
   end
   
   
+  describe ".create" do
+    #let(:transaction){create(:transaction)}
+    let(:the_params){
+      {customer_id: 3, input_amount: 250, output_amount: 600, input_currency: "$", output_currency: "GHS", transaction_date: DateTime.now }
+    }
+    
+    let(:the_wrong_params){
+      {input_amount: -250, output_amount: 600, input_currency: "$", output_currency: "GHS", transaction_date: DateTime.now }      
+    }
+    
+    context "creating with valid attributes" do
+      it "creates a new transaction" do
+        expect { post "/transactions", params: the_params, as: :json }.to change(Transaction, :count).by(1)
+      end
+      
+      it "renders a json response with the new data" do
+        post "/transactions", params: the_params, as: :json
+        expect(response).to have_http_status(:created)
+        expect(response.content_type).to match(a_string_including("application/json"))
+      end
+    end
+    
+    context "creating without valid attributes" do
+      it "does not create a new transaction" do
+        expect { post "/transactions", params: the_wrong_params, as: :json }.to change(Transaction, :count).by(0)
+      end
+      
+      it "renders a JSON response with errors for the new transaction" do
+        post "/transactions", params: the_wrong_params, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to include("application/json")
+      end
+    end
+    
+  end
 end
