@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2022_07_12_114208) do
     t.decimal "output_amount", precision: 12, scale: 2
     t.string "output_currency"
     t.date "transaction_date"
+    t.string "status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

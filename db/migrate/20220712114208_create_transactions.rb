@@ -7,6 +7,7 @@ class CreateTransactions < ActiveRecord::Migration[6.0]
       t.decimal :output_amount, precision: 12, scale: 2
       t.string :output_currency
       t.date :transaction_date
+      t.string :status
 
       t.timestamps
     end

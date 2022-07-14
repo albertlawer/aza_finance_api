@@ -1,6 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe "Transactions", type: :request do
+  
+  let(:the_params){
+      {customer_id: 3, input_amount: 250, output_amount: 600, input_currency: "$", output_currency: "GHS", transaction_date: DateTime.now, status: "1" }
+    }
+    
+  let(:the_wrong_params){
+      {input_amount: -250, output_amount: 600, input_currency: "$", output_currency: "GHS", transaction_date: DateTime.now }      
+    }
+
   describe ".index" do
     
     let(:transaction){build(:transaction)}
@@ -25,7 +34,8 @@ RSpec.describe "Transactions", type: :request do
                                             input_currency: transaction.input_currency,
                                             output_amount: transaction.output_amount.to_s,
                                             output_currency: transaction.output_currency,
-                                            transaction_date: transaction.transaction_date.strftime("%F")
+                                            transaction_date: transaction.transaction_date.strftime("%F"),
+                                            status: transaction.status
                                             )
     end
   end
@@ -50,20 +60,14 @@ RSpec.describe "Transactions", type: :request do
                                             input_currency: transaction.input_currency,
                                             output_amount: transaction.output_amount.to_s,
                                             output_currency: transaction.output_currency,
-                                            transaction_date: transaction.transaction_date.strftime("%F")
+                                            transaction_date: transaction.transaction_date.strftime("%F"),
+                                            status: transaction.status
                                             )
     end
   end
   
-  
   describe ".create" do
-    let(:the_params){
-      {customer_id: 3, input_amount: 250, output_amount: 600, input_currency: "$", output_currency: "GHS", transaction_date: DateTime.now }
-    }
     
-    let(:the_wrong_params){
-      {input_amount: -250, output_amount: 600, input_currency: "$", output_currency: "GHS", transaction_date: DateTime.now }      
-    }
     
     context "creating with valid attributes" do
       it "creates a new transaction" do
@@ -87,7 +91,28 @@ RSpec.describe "Transactions", type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to include("application/json")
       end
+    end    
+  end
+  
+  
+  describe ".update" do
+    
+    let(:transaction){create(:transaction)}
+    
+    context "updating with valid params" do
+      it "uupdates a record" do
+        put "/transactions/#{transaction.id}", params: the_params, as: :json
+        expect(response).to have_http_status(:ok)
+        expect(response.content_type).to match(a_string_including("application/json"))
+      end
     end
     
+    context "updating with invalid params" do
+      it "does not update a record" do
+        put "/transactions/#{transaction.id}", params: the_wrong_params, as: :json 
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
   end
+
 end

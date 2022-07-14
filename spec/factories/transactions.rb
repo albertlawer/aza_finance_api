@@ -6,5 +6,6 @@ FactoryBot.define do
     output_amount { 9.99 }
     output_currency { "GHS" }
     transaction_date { "2022-07-12" }
+    status { "1" }
   end
 end
